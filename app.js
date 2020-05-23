@@ -1,5 +1,6 @@
 const express = require("express");
 const routes = require("./routes/index");
+const db = require("./models/index");
 
 // initialise the app and listen on env port
 // default to 8080
@@ -11,6 +12,7 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 // setup routes
 app.use("/", routes);
+app.use(db);
 
 // start the application
 app.listen(port, () => {
