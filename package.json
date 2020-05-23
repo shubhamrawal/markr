@@ -1,0 +1,24 @@
+{
+  "name": "markr",
+  "version": "1.0.0",
+  "description": "Prototype for Markr - a marking as a service platform",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shubhamrawal/markr.git"
+  },
+  "author": "shubhamrawal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shubhamrawal/markr/issues"
+  },
+  "homepage": "https://github.com/shubhamrawal/markr#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "sequelize": "^5.21.10"
+  }
+}
