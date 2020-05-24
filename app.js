@@ -8,11 +8,9 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // middleware
-
 app.use(express.json());
 // setup routes
 app.use("/", routes);
-app.use(db);
 
 // start the application
 app.listen(port, () => {

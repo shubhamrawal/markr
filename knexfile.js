@@ -16,6 +16,16 @@ module.exports = {
     },
   },
 
+  // development: {
+  //   client: "mysql2",
+  //   connection: {
+  //     host: "localhost",
+  //     user: "root",
+  //     password: "zeppelin56",
+  //     database: "markr",
+  //   },
+  // },
+
   // staging: {
   //   client: "postgresql",
   //   connection: {

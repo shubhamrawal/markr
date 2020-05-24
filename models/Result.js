@@ -20,3 +20,5 @@ class Result extends Model {
     };
   }
 }
+
+module.exports = Result;

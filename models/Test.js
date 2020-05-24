@@ -20,3 +20,5 @@ class Test extends Model {
     };
   }
 }
+
+module.exports = Test;
