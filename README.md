@@ -44,7 +44,7 @@ XML
 
 3. The simplest approach would have been to go through the marks in each **POST** request and insert/update them in the database. When a user needed to **GET** the aggregate, they would be computed then and the result returned back to the user.
 
-4. The approach I decided to go with was to design a database schema with an aggregate table for keeping track of test aggregates (warehouse db style architecture). My assumptions was that the number of reads to the database will be much greater than the number of writes - which will help mitigate the higher costs of keeping the aggregate table updated.
+4. The approach I decided to go with (something the final service could be built on top of) was to design a database schema with an aggregate table for keeping track of test aggregates (warehouse db style architecture). My assumption was that the number of reads to the database will be much greater than the number of writes - which will help mitigate the higher costs of keeping the aggregate table updated.
 
 5. In a real-world scenario the aggregate table would not be updated with every **POST** request. For the purposes of this prototype, that is how it is implemented. A different update approach could be adopted for future development.
 
