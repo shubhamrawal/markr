@@ -20,10 +20,10 @@ You need an installation of [Docker](https://www.docker.com/) to build and run t
 
 1. The express server will run on port **8080** in the container and bound to port **80** on the host. Access the server by navigating to the link <localhost:80/results/1/aggregate>
 
-2. **POST** requests can be made to the server at <localhost:80/import>. The XML files need to have the _Content-Type_ as _text/xml+markr_. An example is given below:
+2. **POST** requests can be made to the server at <localhost:80/import>. The XML files need to have the _Content-Type_ as _text/xml+markr_. An example is given below [taken from the requirements document]:
 
 ```
-curl -X POST -H 'Content-Type: text/xml+markr' http://localhost:4567/import -d @- <<XML
+curl -X POST -H 'Content-Type: text/xml+markr' http://localhost:80/import -d @- <<XML
     <mcq-test-results>
         <mcq-test-result scanned-on="2017-12-04T12:12:10+11:00">
             <first-name>Jane</first-name>
