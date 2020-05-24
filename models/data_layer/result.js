@@ -35,10 +35,7 @@ const getTestData = (old_results, new_results) => {
 
   // filter out results with the same student id
   const unique = _.differenceWith(new_results, old_results, _.isEqual);
-  // const results = _.uniqBy(
-  //   _.orderBy(unique, ["student_id", "marks_obtained"], ["asc", "desc"]),
-  //   "student_id"
-  // );
+  // find only inserts and higher marks updates
   const results = removeDuplicates(unique);
 
   // find new results
