@@ -40,10 +40,16 @@ XML
 
 1. The prototype is a microservice and will form part of a larger platform. No authentication/authorisation is provided - the service will eventually have access to an SSO server/auth server.
 
-2. The database schema was designed with an aggregate table for keeping track of test aggregates (warehouse db style architecture). The number of reads to the database will be much greater than the number of writes - which will help mitigate the higher costs of keeping the aggregate table updated.
+2. An SQL database was chosen over NoSQL because the data is well structured and perfectly suited for storing grades.
 
-3. In a real-world scenarion the aggregate table would not be updated with every results entry. For the purposes of this prototype, that is how it is implemented. A different update approach could be adopted for future development.
+3. The database schema was designed with an aggregate table for keeping track of test aggregates (warehouse db style architecture). The number of reads to the database will be much greater than the number of writes - which will help mitigate the higher costs of keeping the aggregate table updated.
 
-4. It is hypothesised that imports to the database would be largely done test-wise. For example, markers uploading all the results for a test at the end of marking. The approach breaks up the data into test-wise results and does a batch insert for all the results for the same test.
+4. In a real-world scenarion the aggregate table would not be updated with every results entry. For the purposes of this prototype, that is how it is implemented. A different update approach could be adopted for future development.
 
-5. The results aggregate request is a simple **GET** request to the database and is done on a per test basis.
+5. It is hypothesised that imports to the database would be largely done test-wise. For example, markers uploading all the results for a test at the end of marking. The approach breaks up the data into test-wise results and does a batch insert for all the results for the same test.
+
+6. The results aggregate request is a simple **GET** request to the database and is done on a per test basis.
+
+7. Depending on the dataset, if the imports happen irregularly and in small batches, a better approach would be to insert new results and update the old ones. The tests associated with these results would be flagged as _dirty_ to be updated later. This could be done before the reports are generated.
+
+8. For a real-time dashboard, the approach would depend on the requirements again. Considering, the marks are not time sensitive information - like sensor data from a safety critical system, we could keep the aggregate table approach and update the test information every so often. If we want truly real-time updates, we could look at a streaming data approach (however, that is unlikely to be the case as marks would not be updated as often).
