@@ -1,6 +1,5 @@
 const _ = require("lodash");
-const testModel = require("../models/data_mappers/test");
-const resultModel = require("../models/data_mappers/result");
+const resultModel = require("../models/data_layer/result");
 
 const isValidResult = (result) => {
   return result.every((num) => {
