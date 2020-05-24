@@ -124,4 +124,8 @@ const storeResults = async (results) => {
   });
 };
 
-module.exports = { storeResults };
+const getAggregate = async (id) => {
+  return testMapper.getTestById(id);
+};
+
+module.exports = { storeResults, getAggregate };
