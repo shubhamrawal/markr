@@ -5,7 +5,7 @@ const getResultByTestId = async (id) => {
 };
 
 const createResult = async (results) => {
-  return Result.query().insert(results);
+  return Result.query().insertGraph(results);
 };
 
 const patchResultByIds = async (test_id, student_id, marks) => {

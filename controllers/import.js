@@ -35,6 +35,9 @@ const parseResult = (result) => {
   }
 };
 
+/**
+ * controller for importing the test results into persistent storage
+ */
 const importResults = async (req, res) => {
   try {
     const { body } = req;
@@ -58,7 +61,7 @@ const importResults = async (req, res) => {
       // store result in the database
       const e = await resultModel.storeResults(parsedResults);
       if (!e) {
-        res.status(200).send("done");
+        res.status(204).send();
       } else {
         throw new Error(e);
       }
@@ -66,7 +69,6 @@ const importResults = async (req, res) => {
       throw new Error("Invalid request");
     }
   } catch (e) {
-    // console.log("invalid");
     res.status(400).send(`400: Invalid POST request. ${e.message}`);
   }
 };

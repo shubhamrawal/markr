@@ -3,6 +3,13 @@ const stats = require("stats-lite");
 const resultsMapper = require("../data_mappers/result");
 const testMapper = require("../data_mappers/test");
 
+const removeDuplicates = (data) => {
+  return _.uniqBy(
+    _.orderBy(data, ["student_id", "marks_obtained"], ["asc", "desc"]),
+    "student_id"
+  );
+};
+
 const mapData = (data, current_max) => {
   return data.map((r) => {
     return {
@@ -16,30 +23,48 @@ const mapData = (data, current_max) => {
   });
 };
 
-const omitAvailable = (data, field) => {
+const omit = (data, field) => {
   return data.map((r) => _.omit(r, field));
 };
 
-const getTestData = (all_results) => {
+const getTestData = (old_results, new_results) => {
   // find max available marks for test
+  const all_results = _.concat(old_results, new_results);
   const marks = all_results.map((result) => result.available_marks);
   const available_marks = Math.max(...marks);
 
   // filter out results with the same student id
-  const results = _.uniqBy(
-    _.orderBy(all_results, ["student_id", "marks_obtained"], ["asc", "desc"]),
-    "student_id"
+  const unique = _.differenceWith(new_results, old_results, _.isEqual);
+  // find only inserts and higher marks updates
+  const results = removeDuplicates(unique);
+
+  // find new results
+  const insertQueries = _.differenceWith(
+    results,
+    old_results,
+    (a, b) => a.student_id === b.student_id && a.test_id === b.test_id
+  );
+
+  // // results to update
+  const updateQueries = _.difference(results, insertQueries);
+
+  const updated = removeDuplicates(
+    _.concat(old_results, results, insertQueries)
   );
 
   // populate test table fields
-  const count = results.length;
-  const marks_obtained = results.map((result) => result.marks_obtained);
+  const count = updated.length;
+  const marks_obtained = updated.map((result) => result.marks_obtained);
   const mean = stats.mean(marks_obtained);
   const p25 = stats.percentile(marks_obtained, 0.25);
   const p50 = stats.median(marks_obtained);
   const p75 = stats.percentile(marks_obtained, 0.75);
 
-  return [results, { available_marks, mean, count, p25, p50, p75 }];
+  return [
+    insertQueries,
+    updateQueries,
+    { available_marks, mean, count, p25, p50, p75 },
+  ];
 };
 
 /**
@@ -60,10 +85,13 @@ const storeResults = async (results) => {
       const test = await testMapper.getTestById(test_id);
       if (!test) {
         // insert test and batch insert results into db
-        const mapped = mapData(test_results);
-        const [filtered, testData] = getTestData(mapped);
+        const new_results = mapData(test_results);
+        const [insertQueries, updateQueries, testData] = getTestData(
+          [],
+          new_results
+        );
         // remove available marks from the results array
-        const results_array = omitAvailable(filtered, "available_marks");
+        const results_array = omit(insertQueries, "available_marks");
         const newTest = await testMapper.createTestWithResults(
           test_id,
           testData,
@@ -76,26 +104,14 @@ const storeResults = async (results) => {
         old_results = mapData(old_results, test.available_marks);
 
         const new_results = mapData(test_results, test.available_marks);
-        const [filtered, testData] = getTestData(
-          _.concat(old_results, new_results)
-        );
 
-        // find old results which need to be updated
-        let updateQueries = _.differenceBy(
-          filtered,
+        const [insert, update, testData] = getTestData(
           old_results,
-          "marks_obtained"
+          new_results
         );
 
-        // find new results
-        let insertQueries = _.differenceWith(
-          filtered,
-          old_results,
-          (a, b) => a.student_id === b.student_id && a.test_id === b.test_id
-        );
-
-        insertQueries = omitAvailable(insertQueries, "available_marks");
-        updateQueries = omitAvailable(updateQueries, "available_marks");
+        const insertQueries = omit(insert, "available_marks");
+        const updateQueries = omit(update, "available_marks");
 
         // update test database with new available marks
         if (testData.available_marks > test.available_marks) {
