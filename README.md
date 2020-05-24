@@ -53,3 +53,5 @@ XML
 7. Depending on the dataset, if the imports happen irregularly and in small batches, a better approach would be to insert new results and update the old ones. The tests associated with these results would be flagged as _dirty_ to be updated later. This could be done before the reports are generated.
 
 8. For a real-time dashboard, the approach would depend on the requirements again. Considering, the marks are not time sensitive information - like sensor data from a safety critical system, we could keep the aggregate table approach and update the test information every so often. If we want truly real-time updates, we could look at a streaming data approach (however, that is unlikely to be the case as marks would not be updated as often).
+
+9. The testing is very minimal at the moment - the prototype would benefit greatly from more extensive testing.
